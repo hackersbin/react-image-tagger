@@ -18,7 +18,7 @@ import { useDispatchHotkeyHandlers } from "../ShortcutsManager"
 import { withHotKeys } from "react-hotkeys"
 import iconDictionary from "./icon-dictionary"
 import KeyframeTimeline from "../KeyframeTimeline"
-import Workspace from "react-material-workspace-layout/Workspace"
+import Workspace from "../Workspace/Workspace"
 import DebugBox from "../DebugSidebarBox"
 import TagsSidebarBox from "../TagsSidebarBox"
 import KeyframesSelector from "../KeyframesSelectorSidebarBox"
@@ -56,6 +56,15 @@ type Props = {
   onRegionClassAdded: () => {},
   hideHeader?: boolean,
   hideHeaderText?: boolean,
+  //from tinus
+  hideRightSidebarSections:{
+    'tasks':boolean,
+    history:boolean
+  },
+  rightSidebarInjectedSections:[],
+  rightSidebarOnLeft:boolean,
+  topBarOpts:{},
+  readOnly:Boolean,
 }
 
 export const MainLayout = ({
@@ -67,6 +76,16 @@ export const MainLayout = ({
   onRegionClassAdded,
   hideHeader,
   hideHeaderText,
+  headerAddedItems,
+  readOnly,
+  rightSidebarOnLeft,
+  hideRightSidebarSections={
+    'tasks':true,
+    history:false
+  },
+  rightSidebarInjectedSections=[],
+  topBarOpts,
+  headerSubSection,
   hideNext = false,
   hidePrev = false,
 }: Props) => {
@@ -109,18 +128,29 @@ export const MainLayout = ({
 
   let impliedVideoRegions = useImpliedVideoRegions(state)
 
+  if(state.readOnly!==readOnly)
+  {
+    console.debug(`InvokingActionForReadOnly!!`,state.readOnly,readOnly)
+    dispatch({ type: "READONLY", val:readOnly })
+  }
+  // if(state.readOnly)
+  // {
+  //   console.debug(`MainlayoutRender::tagger!!render`,{readOnly: state.readOnly})
+  // }
+  
   const refocusOnMouseEvent = useCallback((e) => {
     if (!innerContainerRef.current) return
     if (innerContainerRef.current.contains(document.activeElement)) return
     if (innerContainerRef.current.contains(e.target)) {
       innerContainerRef.current.focus()
       e.target.focus()
-    }
+    } 
   }, [])
 
   const canvas = (
     <ImageCanvas
       {...settings}
+      state={state}
       showCrosshairs={
         settings.showCrosshairs &&
         !["select", "pan", "zoom"].includes(state.selectedTool)
@@ -231,6 +261,7 @@ export const MainLayout = ({
         >
           <Workspace
             allowFullscreen
+            rightSidebarOnLeft={rightSidebarOnLeft}
             iconDictionary={iconDictionary}
             hideHeader={hideHeader}
             hideHeaderText={hideHeaderText}
@@ -246,18 +277,20 @@ export const MainLayout = ({
                 <div className={classes.headerTitle}>{activeImage.name}</div>
               ) : null,
             ].filter(Boolean)}
+            headerSubSection={headerSubSection}
+            headerAddedItems={headerAddedItems}
             headerItems={[
+              !nextImageHasRegions && !(topBarOpts && topBarOpts.hide && topBarOpts.hide.clone) && !readOnly && activeImage.regions && { name: "Clone" },
               !hidePrev && { name: "Prev" },
               !hideNext && { name: "Next" },
               state.annotationType !== "video"
                 ? null
                 : !state.videoPlaying
                 ? { name: "Play" }
-                : { name: "Pause" },
-              !nextImageHasRegions && activeImage.regions && { name: "Clone" },
-              { name: "Settings" },
-              state.fullScreen ? { name: "Window" } : { name: "Fullscreen" },
-              { name: "Save" },
+                : { name: "Pause" },              
+              !(topBarOpts && topBarOpts.hide && topBarOpts.hide.settings) && { name: "Settings" },
+              !(topBarOpts && topBarOpts.hide && topBarOpts.hide.fullscreen) &&  (state.fullScreen ? { name: "Window" } : { name: "Fullscreen" }),
+              !(topBarOpts && topBarOpts.hide && topBarOpts.hide.save) && { name: "Save" },
             ].filter(Boolean)}
             onClickHeaderItem={onClickHeaderItem}
             onClickIconSidebarItem={onClickIconSidebarItem}
@@ -329,7 +362,8 @@ export const MainLayout = ({
               debugModeOn && (
                 <DebugBox state={debugModeOn} lastAction={state.lastAction} />
               ),
-              state.taskDescription && (
+              ...rightSidebarInjectedSections || [],
+              state.taskDescription && !hideRightSidebarSections.tasks && (
                 <TaskDescription description={state.taskDescription} />
               ),
               state.labelImages && (
@@ -363,7 +397,7 @@ export const MainLayout = ({
                   keyframes={state.keyframes}
                 />
               ),
-              <HistorySidebarBox
+            !hideRightSidebarSections.history &&   <HistorySidebarBox
                 history={state.history}
                 onRestoreHistory={action("RESTORE_HISTORY")}
               />,

@@ -117,9 +117,19 @@ export default (state: MainLayoutState, action: Action) => {
     )
   }
 
+  const setReadOnly = (val:Boolean) => {
+    return setIn(
+      state,["readOnly"],val
+    )
+  }
+
   switch (action.type) {
     case "@@INIT": {
       return state
+    }
+    case "READONLY": {
+      console.debug(`dispatching readonly action`,action)
+      return setReadOnly(action.val)
     }
     case "SELECT_IMAGE": {
       return setNewImage(action.image, action.imageIndex)

@@ -69,6 +69,9 @@ export const Annotator = ({
     "create-expanding-line",
     "show-mask",
   ],
+  hideRightSidebarSections={},
+  rightSidebarOnLeft=false,
+  rightSidebarInjectedSections=[],
   selectedTool = "select",
   regionTagList = [],
   regionClsList = [],
@@ -78,6 +81,10 @@ export const Annotator = ({
   taskDescription = "",
   fullImageSegmentationMode = false,
   RegionEditLabel,
+  topBarOpts,
+  readOnly,
+  headerAddedItems,
+  headerSubSection,
   videoSrc,
   videoTime = 0,
   videoName,
@@ -119,6 +126,13 @@ export const Annotator = ({
       regionClsList,
       regionTagList,
       imageClsList,
+      hideRightSidebarSections,
+      topBarOpts,
+      readOnly,
+      headerSubSection,
+      headerAddedItems,
+      rightSidebarInjectedSections,
+      rightSidebarOnLeft,
       imageTagList,
       currentVideoTime: videoTime,
       enabledTools,
@@ -178,6 +192,13 @@ export const Annotator = ({
         alwaysShowNextButton={Boolean(onNextImage)}
         alwaysShowPrevButton={Boolean(onPrevImage)}
         state={state}
+        rightSidebarOnLeft={rightSidebarOnLeft}
+        hideRightSidebarSections={hideRightSidebarSections}
+        rightSidebarInjectedSections={rightSidebarInjectedSections}
+        headerSubSection={headerSubSection}
+        readOnly={readOnly}
+        topBarOpts={topBarOpts}
+        headerAddedItems={headerAddedItems}
         dispatch={dispatch}
         onRegionClassAdded={onRegionClassAdded}
         hideHeader={hideHeader}

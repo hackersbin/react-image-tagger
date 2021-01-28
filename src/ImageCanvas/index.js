@@ -98,6 +98,7 @@ const getDefaultMat = (allowedArea = null, { iw, ih } = {}) => {
 }
 
 export const ImageCanvas = ({
+  state,
   regions,
   imageSrc,
   videoSrc,
@@ -313,6 +314,7 @@ export const ImageCanvas = ({
 
   return (
     <div
+    className="imageCanvasInstaceClass"
       style={{
         width: "100%",
         height: "100%",
@@ -375,6 +377,7 @@ export const ImageCanvas = ({
       {imageLoaded && showTags && !dragging && (
         <PreventScrollToParents key="regionTags">
           <RegionTags
+          state={state}
             regions={regions}
             projectRegionBox={projectRegionBox}
             mouseEvents={mouseEvents}
