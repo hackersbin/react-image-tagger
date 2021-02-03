@@ -100,7 +100,7 @@ export const RightSidebar = ({ children, initiallyExpanded, height,rightSidebarO
 
   return (
     <Container className={expanded ? "expanded" : ""} style={containerStyle}>
-      <Slider className={`sliderdiv ${expanded ? "expanded" : ""}`}>
+      <Slider style={{overflowY:'auto'}} className={`sliderdiv ${expanded ? "expanded" : ""}`}>
         <InnerSliderContent>{children}</InnerSliderContent>
       </Slider>
       <Expander  onClick={toggleExpanded} className={expanded ? "expanded" : ""} style={rightSidebarOnLeft && {left:'auto',right:0} || {}}>

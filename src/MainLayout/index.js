@@ -62,6 +62,7 @@ type Props = {
     history:boolean
   },
   rightSidebarInjectedSections:[],
+  rightSidebarInjectedSectionsBottom:[],
   rightSidebarOnLeft:boolean,
   topBarOpts:{},
   readOnly:Boolean,
@@ -84,6 +85,7 @@ export const MainLayout = ({
     history:false
   },
   rightSidebarInjectedSections=[],
+  rightSidebarInjectedSectionsBottom=[],
   topBarOpts,
   headerSubSection,
   hideNext = false,
@@ -401,6 +403,7 @@ export const MainLayout = ({
                 history={state.history}
                 onRestoreHistory={action("RESTORE_HISTORY")}
               />,
+              ...rightSidebarInjectedSectionsBottom || []
             ].filter(Boolean)}
           >
             {canvas}
