@@ -152,7 +152,7 @@ export const ImageCanvas = ({
   const [mat, changeMat] = useRafState(getDefaultMat())
   const maskImages = useRef({})
   const windowSize = useWindowSize()
-
+  const LastImageLoaded = useState('')
   const getLatestMat = useEventCallback(() => mat)
   useWasdMode({ getLatestMat, changeMat })
 
@@ -185,27 +185,28 @@ export const ImageCanvas = ({
 
   const [imageDimensions, changeImageDimensions] = useState()
   const imageLoaded = Boolean(imageDimensions && imageDimensions.naturalWidth)
-
+  const canvas = canvasEl.current
   const onVideoOrImageLoaded = useEventCallback(
     ({ naturalWidth, naturalHeight, duration }) => {
       const dims = { naturalWidth, naturalHeight, duration }
       if (onImageOrVideoLoaded) onImageOrVideoLoaded(dims)
       changeImageDimensions(dims)
+     
       // Redundant update to fix rerendering issues
-      setTimeout(() => changeImageDimensions(dims), 10)
+      setTimeout(() => {
+        
+        changeImageDimensions(dims)}, 10)
     }
   )
 
-  const excludePattern = useExcludePattern()
-
-  const canvas = canvasEl.current
-  if (canvas && imageLoaded) {
+  if (canvas && imageLoaded && LastImageLoaded[0]!=imageSrc) {
     const { clientWidth, clientHeight } = canvas
 
     const fitScale = Math.max(
       imageDimensions.naturalWidth / (clientWidth - 20),
       imageDimensions.naturalHeight / (clientHeight - 20)
     )
+   // const fitScale = 1
 
     const [iw, ih] = [
       imageDimensions.naturalWidth / fitScale,
@@ -219,7 +220,13 @@ export const ImageCanvas = ({
       canvasWidth: clientWidth,
       canvasHeight: clientHeight,
     }
+    LastImageLoaded[1](imageSrc)
+    console.debug(`SetLayoutParams`,layoutParams.current)
   }
+  const excludePattern = useExcludePattern()
+
+
+  
 
   useEffect(() => {
     if (!imageLoaded) return
@@ -339,7 +346,8 @@ export const ImageCanvas = ({
       )}
       {imageLoaded && !dragging && (
         <RegionSelectAndTransformBoxes
-          key="regionSelectAndTransformBoxes"
+          key={"regionSelectAndTransformBoxes"}
+          state={state}
           regions={
             !modifyingAllowedArea || !allowedArea
               ? regions

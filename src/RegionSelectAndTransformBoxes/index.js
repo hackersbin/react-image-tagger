@@ -5,10 +5,10 @@ import PreventScrollToParents from "../PreventScrollToParents"
 import { Tooltip } from "@material-ui/core"
 
 const TransformGrabber = styled("div")({
-  width: 8,
-  height: 8,
+  width: 10,
+  height: 10,
   zIndex: 2,
-  border: "2px solid #FFF",
+  border: "2px solid #fd67f0",
   position: "absolute",
 })
 
@@ -31,6 +31,7 @@ const arePropsEqual = (prev, next) => {
 export const RegionSelectAndTransformBox = memo(
   ({
     region: r,
+    state,
     mouseEvents,
     projectRegionBox,
     dragWithPrimary,
@@ -69,7 +70,7 @@ export const RegionSelectAndTransformBox = memo(
             !zoomWithPrimary &&
             !r.locked &&
             r.highlighted &&
-            mat.a < 1.2 &&
+           
             [
               [0, 0],
               [0.5, 0],
@@ -210,11 +211,12 @@ export const RegionSelectAndTransformBox = memo(
 
 export const RegionSelectAndTransformBoxes = memo(
   (props) => {
+   // console.debug('REgionSelectAndBoxes...',props.layoutParams)
     return props.regions
       .filter((r) => r.visible || r.visible === undefined)
       .filter((r) => !r.locked)
       .map((r, i) => {
-        return <RegionSelectAndTransformBox key={r.id} {...props} region={r} />
+        return <RegionSelectAndTransformBox key={`${r.id}`} {...props} region={r} />
       })
   },
   (n, p) => n.regions === p.regions && n.mat === p.mat

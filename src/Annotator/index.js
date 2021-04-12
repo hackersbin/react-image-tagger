@@ -72,6 +72,8 @@ export const Annotator = ({
   hideRightSidebarSections={},
   rightSidebarOnLeft=false,
   rightSidebarInjectedSections=[],
+  rightSidebarInjectedSectionsBottom=[],
+  controlId='',
   selectedTool = "select",
   regionTagList = [],
   regionClsList = [],
@@ -132,6 +134,8 @@ export const Annotator = ({
       headerSubSection,
       headerAddedItems,
       rightSidebarInjectedSections,
+      rightSidebarInjectedSectionsBottom,
+      controlId,
       rightSidebarOnLeft,
       imageTagList,
       currentVideoTime: videoTime,
@@ -195,6 +199,8 @@ export const Annotator = ({
         rightSidebarOnLeft={rightSidebarOnLeft}
         hideRightSidebarSections={hideRightSidebarSections}
         rightSidebarInjectedSections={rightSidebarInjectedSections}
+        rightSidebarInjectedSectionsBottom={rightSidebarInjectedSectionsBottom}
+        controlId={controlId}
         headerSubSection={headerSubSection}
         readOnly={readOnly}
         topBarOpts={topBarOpts}

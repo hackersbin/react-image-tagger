@@ -31,6 +31,14 @@ const RegionComponents = {
       />
     </g>
   )),
+  geometry:  memo(({ region, iw, ih }) => {
+    return (
+      region.geometry && region.geometry.coordinates && <path fill={colorAlpha(region.color, 0.5)} fillRule="evenodd"
+       d={ region.geometry.coordinates.map(coords=>{
+        return  `M ${coords.map(coord=>`${coord[0]*iw} ${coord[1] * ih}`).join(" ")} Z`
+      }).join(" ")  } />
+    )
+  }),
   polygon: memo(({ region, iw, ih, fullSegmentationMode }) => {
     const Component = region.open ? "polyline" : "polygon"
     const alphaBase = fullSegmentationMode ? 0.5 : 1

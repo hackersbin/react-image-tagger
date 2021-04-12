@@ -63,6 +63,7 @@ type Props = {
   },
   rightSidebarInjectedSections:[],
   rightSidebarInjectedSectionsBottom:[],
+  controlId?:string,
   rightSidebarOnLeft:boolean,
   topBarOpts:{},
   readOnly:Boolean,
@@ -88,6 +89,7 @@ export const MainLayout = ({
   rightSidebarInjectedSectionsBottom=[],
   topBarOpts,
   headerSubSection,
+  controlId,
   hideNext = false,
   hidePrev = false,
 }: Props) => {
