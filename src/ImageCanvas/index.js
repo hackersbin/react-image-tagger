@@ -35,7 +35,7 @@ import VideoOrImageCanvasBackground from "../VideoOrImageCanvasBackground"
 import useEventCallback from "use-event-callback"
 import RegionShapes from "../RegionShapes"
 import useWasdMode from "./use-wasd-mode"
-
+import getActiveImage from "../Annotator/reducers/get-active-image"
 const useStyles = makeStyles(styles)
 
 type Props = {
@@ -403,7 +403,9 @@ export const ImageCanvas = ({
         </PreventScrollToParents>
       )}
       {!showTags && highlightedRegion && (
-        <div key="topLeftTag" className={classes.fixedRegionLabel}>
+        <div  onClick={()=>{
+          console.debug('REACTSTATE',state)
+        }} key="topLeftTag" className={classes.fixedRegionLabel}>
           <RegionLabel
             disableClose
             allowedClasses={regionClsList}
@@ -419,6 +421,7 @@ export const ImageCanvas = ({
 
       {zoomWithPrimary && zoomBox !== null && (
         <div
+
           key="zoomBox"
           style={{
             position: "absolute",
@@ -482,7 +485,10 @@ export const ImageCanvas = ({
           />
         </>
       </PreventScrollToParents>
-      <div className={classes.zoomIndicator}>
+      <div  onClick={()=>{
+        const ac=getActiveImage(state)
+          console.debug('REACTSTATE',{img:ac && state.images[ac.currentImageIndex], activeImg:ac,state})
+        }} className={classes.zoomIndicator}>
         {((1 / mat.a) * 100).toFixed(0)}%
       </div>
     </div>

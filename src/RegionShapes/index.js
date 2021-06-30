@@ -18,7 +18,11 @@ const RegionComponents = {
       />
     </g>
   )),
-  box: memo(({ region, iw, ih }) => (
+  box: memo(({ region, iw, ih }) => {
+    const point0 = [region.x,region.y]
+    return (
+    <>
+     {region.text && point0 &&  <text x={point0[0] * iw} y={point0[1] * ih} style={{fontWeight:'bold'}} fill={region.color}>{region.text}</text>}
     <g transform={`translate(${region.x * iw} ${region.y * ih})`}>
       <rect
         strokeWidth={2}
@@ -29,20 +33,28 @@ const RegionComponents = {
         stroke={colorAlpha(region.color, 0.75)}
         fill={colorAlpha(region.color, 0.25)}
       />
-    </g>
-  )),
+    </g></>
+  )}),
   geometry:  memo(({ region, iw, ih }) => {
+    const point0 = region.geometry?.coordinates && region.geometry.coordinates[0] && region.geometry.coordinates[0][0] 
     return (
-      region.geometry && region.geometry.coordinates && <path fill={colorAlpha(region.color, 0.5)} fillRule="evenodd"
+      region.geometry && region.geometry.coordinates && <>
+        {region.text && point0 &&  <text x={point0[0] * iw} y={point0[1] * ih} style={{fontWeight:'bold',fontSize:'16pt'}} fill={region.color}>{region.text}</text>}
+       <path fill={colorAlpha(region.color, 0.5)} fillRule="evenodd"
        d={ region.geometry.coordinates.map(coords=>{
         return  `M ${coords.map(coord=>`${coord[0]*iw} ${coord[1] * ih}`).join(" ")} Z`
-      }).join(" ")  } />
+      }).join(" ")  } /> 
+      </>
     )
   }),
   polygon: memo(({ region, iw, ih, fullSegmentationMode }) => {
     const Component = region.open ? "polyline" : "polygon"
     const alphaBase = fullSegmentationMode ? 0.5 : 1
+    const point0 = region.points && region.points[0] 
+    
     return (
+      <>
+      {region.text && point0 &&  <text x={point0[0] * iw} y={point0[1] * ih} style={{fontWeight:'bold',fontSize:'16pt'}} fill={region.color}>{region.text}</text>}
       <Component
         points={region.points
           .map(([x, y]) => [x * iw, y * ih])
@@ -52,6 +64,7 @@ const RegionComponents = {
         stroke={colorAlpha(region.color, 0.75)}
         fill={colorAlpha(region.color, 0.25)}
       />
+      </>
     )
   }),
   keypoints: ({ region, iw, ih, keypointDefinitions }) => {

@@ -15,7 +15,7 @@ import setInLocalStorage from "../../utils/set-in-local-storage"
 
 const getRandomId = () => Math.random().toString().split(".")[1]
 
-export default (state: MainLayoutState, action: Action) => {
+export default (state: MainLayoutState, action: Action, readonly) => {
   if (
     state.allowedArea &&
     state.selectedTool !== "modify-allowed-area" &&
@@ -24,6 +24,16 @@ export default (state: MainLayoutState, action: Action) => {
     const aa = state.allowedArea
     action.x = clamp(action.x, aa.x, aa.x + aa.w)
     action.y = clamp(action.y, aa.y, aa.y + aa.h)
+  }else{
+    // if(state.selectedImage!==undefined)
+    // {
+    //   const selectedImage = state.images && state.images[state.selectedImage]
+    //   if(selectedImage && selectedImage.pixelSize)
+    //   {
+    //     action.x = clamp(action.x, 0, selectedImage.pixelSize.w)
+    //     action.y = clamp(action.y, 0, selectedImage.pixelSize.h)
+    //   }
+    // }
   }
 
   if (action.type === "ON_CLS_ADDED" && action.cls && action.cls !== "") {
@@ -37,7 +47,7 @@ export default (state: MainLayoutState, action: Action) => {
 
   // Throttle certain actions
   if (action.type === "MOUSE_MOVE") {
-    if (Date.now() - ((state: any).lastMouseMoveCall || 0) < 16) return state
+    if (Date.now() - ((state: any).lastMouseMoveCall || 0) < 40) return state
     state = setIn(state, ["lastMouseMoveCall"], Date.now())
   }
   if (!action.type.includes("MOUSE")) {
@@ -64,9 +74,11 @@ export default (state: MainLayoutState, action: Action) => {
     const regionIndex = getRegionIndex(regionId)
     if (regionIndex === null) return [null, null]
     const region = activeImage.regions[regionIndex]
+   // console.debug('GETREGION',{state,action,region,regionIndex})
     return [region, regionIndex]
   }
   const modifyRegion = (regionId, obj) => {
+    console.debug('MODREGION',{state,action,regionId,obj})
     const [region, regionIndex] = getRegion(regionId)
     if (!region) return state
     if (obj !== null) {
@@ -345,12 +357,16 @@ export default (state: MainLayoutState, action: Action) => {
           if (regionIndex === null) return state
           const box = activeImage.regions[regionIndex]
 
+          const nx = dx>=0 && dx || 0
+          const ny = dy>=0 && dy || 0
+          const nw = nx+dw>1 && (1-nx) || dw
+          const nh = ny+dh>1 && (1-ny) || dh
           return setIn(state, [...pathToActiveImage, "regions", regionIndex], {
             ...box,
-            x: dx,
-            w: dw,
-            y: dy,
-            h: dh,
+            x: nx,
+            w: nw,
+            y: ny,
+            h: nh,
           })
         }
         case "RESIZE_KEYPOINTS": {

@@ -146,6 +146,40 @@ export const getEnclosingBox = (region: Region) => {
 }
 
 export const moveRegion = (region: Region, x: number, y: number) => {
+  if(x<0)
+  {
+    x=0
+  }
+  if(x>1)
+  {
+    x=1
+  }
+  if(y<0)
+  {
+    y=0
+  }
+  if(y>1)
+  {
+    y=1
+  }
+  const halfw=region.w/2
+  if(x - halfw < 0)
+  {
+    x = halfw
+  }
+  if(x+halfw>1)
+  {
+    x=1-halfw
+  }
+  const halfh=region.h/2
+  if(y - halfh < 0)
+  {
+    y = halfh
+  }
+  if(y+halfh>1)
+  {
+    y=1-halfh
+  }
   switch (region.type) {
     case "point": {
       return { ...region, x, y }
